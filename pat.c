@@ -8,7 +8,11 @@ void receptionist();  // Function declaration
 void appointment();
 void emergency();
 int doctors_id(int which_doctor, int speciality);
-
+struct Doctor{
+char name[100];
+char speciality[100];
+char slots[100];	
+}doctor_data[10];
 struct patient {
     char name[30];
     char phone[12];
@@ -17,15 +21,34 @@ struct patient {
     char address[30];
 } pinfo;
 
-void appointmentdata(struct patient *p, char doctors[10][100], int id) {
+void appointmentdata(struct Doctor *d,struct patient *p, int id) {
     FILE *ptr;
+    FILE *doctor_data_ptr;
+    //doctor
+    doctor_data_ptr=fopen("doctor.txt","r");
+    if(doctor_data_ptr==NULL){
+    	printf("Error in opening file");
+	}
+	for(int i=0;i<10;i++){
+		
+		fgets(d[i].name,sizeof(d[i].name),doctor_data_ptr);
+		d[i].name[strcspn(d[i].name,"/n")]=0;
+		fgets(d[i].speciality,sizeof(d[i].speciality),doctor_data_ptr);
+		d[i].speciality[strcspn(d[i].speciality,"\n")]=0;
+		fgets(d[i].slots,sizeof(d[i].slots),doctor_data_ptr);
+	  	d[i].slots[strcspn(d[i].slots,"\n")]=0;
+
+
+	}
+	
+	// appointment
     ptr = fopen("appointment2.txt", "a"); // Open file in append mode to add new appointments
     if (ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-    fprintf(ptr, "ID: %d , Name: %s , Phone: %s , Email: %s , Gender: %s , Address: %s , Doctor: %s\n", 
-            id, p->name, p->phone, p->email, p->gender, p->address, doctors[id]);
+    fprintf(ptr, "doctor_id: %d , Name: %s , Phone: %s , Email: %s , Gender: %s , Address: %s , Doctor: %s , Slot: %s\n", 
+            id, p->name, p->phone, p->email, p->gender, p->address,d[id-1].name,d[i-1].slots);
     fclose(ptr); // Close the file after writing
 }
 
@@ -48,6 +71,7 @@ int main() {
         default:
             printf("Invalid choice\n");
     }
+    printf("%s",doctor_data[0].name);
     return 0;
 }
 
@@ -71,18 +95,7 @@ void patient() {
 }
 
 void appointment() {
-    char doctors[10][100] = {
-        "Dr Muhammad Faisal Khanzada(PMC Verified)\n.FCPS, Cardiology, MBBS, LUMHS\n.Experience: 14 Year(s)",
-        "Dr. Asad Pathan(PMC Verfied)\n.FACC, FSCAI\n.Experience: 15 Year(s)",
-        "Dr. Asma Jabeen (PMDC Verified) MBBS , MCPS (Obstetrics & Gynecology)",
-        "Dr. Azra Shamsi (PMDC Verified) MBBS, MCPS (Obstetrics & Gynaecology), FCPS",
-        "Prof. Dr. Muhammad Farooq (PMDC Verified) MBBS, FCPS (Urology), FCPS (Surgery)",
-        "Dr. Muhammad Imran Malik (PMDC Verified) MBBS, FCPS",
-        "Dr. Tabinda Batool (PMDC Verified) MBBS, Certified Course in Hypertension by   of Hypertension",
-        "Prof. Dr. Arif Herekar (PMDC Verified) MBBS, MCPS (Medicine), MD Neurology",
-        "Dr. Muhammad Amjad (PMDC Verified) MBBS, MCPS (Dermatology), FCPS (Dermatology)",
-        "Dr. Aisha Ahmad (PMDC Verified) MBBS, FCPS (Dermatology), Certified (Aesthetic Medicine)"
-    };
+   
     int speciality, which_doctor;
 
     // Getting patient details
@@ -105,8 +118,8 @@ void appointment() {
     pinfo.address[strcspn(pinfo.address, "\n")] = '\0';
 
     // Choosing a specialty and doctor
-    printf("Choose Speciality\n");
-    printf("1.Cardiologist\n2.Gynecologist\n3.Urologist\n4.Neurologist\n5.Dermatologist\n6.Exit\nEnter: ");
+      printf("Choose Speciality\n");
+    printf("1. Cardiologist\n2. Gynecologist\n3. Urologist\n4. Neurologist\n5. Dermatologist\n6. Exit\nEnter: ");
     scanf("%d", &speciality);
     switch (speciality) {
         case 1:
@@ -119,11 +132,11 @@ void appointment() {
             }
             {
                 int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&pinfo, doctors, id);
+                appointmentdata(&doctor_data,&pinfo, id);
             }
             break;
         case 2:
-            printf("Best Gynecologists:\n");
+           printf("Best Gynecologists:\n");
             printf("1. Dr. Asma Jabeen\n2. Dr. Azra Shamsi\nEnter: ");
             scanf("%d", &which_doctor);
             if (which_doctor < 1 || which_doctor > 2) {
@@ -132,7 +145,7 @@ void appointment() {
             }
             {
                 int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&pinfo, doctors, id);
+                appointmentdata(&doctor_data,&pinfo, id);
             }
             break;
         case 3:
@@ -145,7 +158,7 @@ void appointment() {
             }
             {
                 int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&pinfo, doctors, id);
+                appointmentdata(&doctor_data,&pinfo, id);
             }
             break;
         case 4:
@@ -158,7 +171,7 @@ void appointment() {
             }
             {
                 int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&pinfo, doctors, id);
+                appointmentdata(&doctor_data,&pinfo, id);
             }
             break;
         case 5:
@@ -171,7 +184,7 @@ void appointment() {
             }
             {
                 int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&pinfo, doctors, id);
+                appointmentdata(&doctor_data,&pinfo, id);
             }
             break;
         case 6:
@@ -182,7 +195,7 @@ void appointment() {
 }
 
 int doctors_id(int which_doctor, int speciality) {
-    int res = (speciality - 1) * 2 + (which_doctor - 1); 
+    int res = (speciality - 1) * 2 + (which_doctor); 
     return res;
 }
 
