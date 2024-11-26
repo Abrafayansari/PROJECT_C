@@ -1,15 +1,27 @@
-#include <stdio.h>
+appointment#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 void patient();
-void doctor();  // Function declaration
 void receptionist();  // Function declaration
 void appointment();
 void emergency();
+//void Doctor_data(struct Doctor *d);
 int doctors_id(int which_doctor, int speciality);
+struct Appointment {
+    int doctor_id;
+    char patient_name[30];
+    char patient_phone[12];
+    char patient_email[30];
+    char patient_gender[8];
+    char patient_address[30];
+    char doctor_name[100];
+    char slot[100];
+}appointment;
 struct Doctor{
+int id;
 char name[100];
+char password[20];
 char speciality[100];
 char slots[3][100];	
 }doctor_data[10];
@@ -20,47 +32,40 @@ struct patient {
     char gender[8];
     char address[30];
 } pinfo;
+void Doctor_fetch(struct Doctor *d);
+void doctor(struct Doctor *d);  // Function declaration
+
+void Doctor_fetch(struct Doctor *d){
+	 FILE *doctor_data_ptr=fopen("doctor.txt","r");
+	  if(doctor_data_ptr==NULL){
+    	printf("Error in opening file");
+	}
+	
+   
+    }
+fclose(doctor_data_ptr);
+}
 
 void appointmentdata(struct Doctor *d,struct patient *p, int id,int slot) {
     FILE *ptr;
-    FILE *doctor_data_ptr;
-    //doctor
-    doctor_data_ptr=fopen("doctor.txt","r");
-    if(doctor_data_ptr==NULL){
-    	printf("Error in opening file");
-	}
-	for(int i=0;i<10;i++){
-		
-		fgets(d[i].name,sizeof(d[i].name),doctor_data_ptr);
-		d[i].name[strcspn(d[i].name,"/n")]=0;
-		fgets(d[i].speciality,sizeof(d[i].speciality),doctor_data_ptr);
-		d[i].speciality[strcspn(d[i].speciality,"\n")]=0;
-		for(int j=0;j<3;j++){
-		fgets(d[i].slots[j],sizeof(d[i].slots[j]),doctor_data_ptr);
-	  	d[i].slots[j][strcspn(d[i].slots[j],"\n")]=0;	
-		}
-		
-
-
-	}
-	
+Doctor_fetch(doctor_data);
 	// appointment
     ptr = fopen("appointment.txt", "a"); // Open file in append mode to add new appointments
     if (ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-    fprintf(ptr, "doctor_id: %d , Name: %s , Phone: %s , Email: %s , Gender: %s , Address: %s , Doctor: %s", 
+    fprintf(ptr, "%d\n%s\n%s\n%s\n%s\n%s\n%s", 
             id, p->name, p->phone, p->email, p->gender, p->address,d[id-1].name);
            switch(slot){
            	case 1:
-           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[0]);
+           	fprintf(ptr,"%s\n",d[id-1].slots[0]);
             break;
             case 2:
-           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[1]);
+           	fprintf(ptr,"%s\n",d[id-1].slots[1]);
             break;
             case 3:
-           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[2]);
+           	fprintf(ptr,"%s\n",d[id-1].slots[2]);
             break;
 		   }
 			
@@ -76,7 +81,7 @@ int main() {
             patient();
             break;
         case 2:
-            doctor();  // Call doctor function
+            doctor(doctor_data);  // Call doctor function
             break;
         case 3:
             receptionist();  // Call receptionist function
@@ -86,8 +91,8 @@ int main() {
         default:
             printf("Invalid choice\n");
     }
-    printf("%s",doctor_data[0].name);
-    return 0;
+//    printf("%s",doctor_data[0].name);
+   return 0;
 }
 
 void patient() {
@@ -260,9 +265,40 @@ void emergency() {
     }
 }
 
-void doctor() {
+void doctor(struct Doctor *d) {
+    char password[20];
+    int found = 0;
+	int choice;
+    
+
     printf("You are in the doctor section\n");
-    // Add any specific logic for the doctor section here.
+    printf("Enter your password: ");
+   scanf("%s",password);
+
+    Doctor_fetch(doctor_data);
+
+    for (int i = 0; i < 10; i++) {
+        if (strcmp(password, d[i].password) == 0) {
+            printf("Welcome doctor %s\n", d[i].name);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Invalid password. Please try again.\n");
+    }else{
+    	 printf("1.Scheduled Appointments\n2.exit\n ");
+    	 printf("Enter :");
+    	 scanf("%d",&choice);
+    	 FILE *ptr;
+    	  ptr = fopen("appointment.txt", "r"); // Open file in append mode to add new appointments
+    if (ptr == NULL) {
+        printf("Error opening file\n");
+        return;
+    }
+	}
+   
 }
 
 void receptionist() {
