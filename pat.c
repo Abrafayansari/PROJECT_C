@@ -11,7 +11,7 @@ int doctors_id(int which_doctor, int speciality);
 struct Doctor{
 char name[100];
 char speciality[100];
-char slots[100];	
+char slots[3][100];	
 }doctor_data[10];
 struct patient {
     char name[30];
@@ -21,7 +21,7 @@ struct patient {
     char address[30];
 } pinfo;
 
-void appointmentdata(struct Doctor *d,struct patient *p, int id) {
+void appointmentdata(struct Doctor *d,struct patient *p, int id,int slot) {
     FILE *ptr;
     FILE *doctor_data_ptr;
     //doctor
@@ -35,20 +35,35 @@ void appointmentdata(struct Doctor *d,struct patient *p, int id) {
 		d[i].name[strcspn(d[i].name,"/n")]=0;
 		fgets(d[i].speciality,sizeof(d[i].speciality),doctor_data_ptr);
 		d[i].speciality[strcspn(d[i].speciality,"\n")]=0;
-		fgets(d[i].slots,sizeof(d[i].slots),doctor_data_ptr);
-	  	d[i].slots[strcspn(d[i].slots,"\n")]=0;
+		for(int j=0;j<3;j++){
+		fgets(d[i].slots[j],sizeof(d[i].slots[j]),doctor_data_ptr);
+	  	d[i].slots[j][strcspn(d[i].slots[j],"\n")]=0;	
+		}
+		
 
 
 	}
 	
 	// appointment
-    ptr = fopen("appointment2.txt", "a"); // Open file in append mode to add new appointments
+    ptr = fopen("appointment.txt", "a"); // Open file in append mode to add new appointments
     if (ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-    fprintf(ptr, "doctor_id: %d , Name: %s , Phone: %s , Email: %s , Gender: %s , Address: %s , Doctor: %s , Slot: %s\n", 
-            id, p->name, p->phone, p->email, p->gender, p->address,d[id-1].name,d[i-1].slots);
+    fprintf(ptr, "doctor_id: %d , Name: %s , Phone: %s , Email: %s , Gender: %s , Address: %s , Doctor: %s", 
+            id, p->name, p->phone, p->email, p->gender, p->address,d[id-1].name);
+           switch(slot){
+           	case 1:
+           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[0]);
+            break;
+            case 2:
+           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[1]);
+            break;
+            case 3:
+           	fprintf(ptr," , Slot: %s\n",d[id-1].slots[2]);
+            break;
+		   }
+			
     fclose(ptr); // Close the file after writing
 }
 
@@ -96,7 +111,7 @@ void patient() {
 
 void appointment() {
    
-    int speciality, which_doctor;
+    int speciality, which_doctor,slot;
 
     // Getting patient details
     printf("Enter your details\n");
@@ -126,66 +141,90 @@ void appointment() {
             printf("Best Cardiologists:\n");
             printf("1. Dr Muhammad Faisal Khanzada\n2. Dr. Asad Pathan\nEnter: ");
             scanf("%d", &which_doctor);
+            printf("Select time slot :\n");
+            printf("1.Mon-Tue: 9AM-5PM\n2.Wed-Fri: 10AM-2PM\n3.Sat:12PM-6PM\n");
+            printf("Enter :");
+            scanf("%d",&slot);
             if (which_doctor < 1 || which_doctor > 2) {
                 printf("Invalid choice\n");
                 return;
             }
-            {
-                int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&doctor_data,&pinfo, id);
-            }
+            
+               { 
+			    int id = doctors_id(which_doctor, speciality);
+                appointmentdata(doctor_data,&pinfo,id,slot);
+               }
             break;
         case 2:
            printf("Best Gynecologists:\n");
             printf("1. Dr. Asma Jabeen\n2. Dr. Azra Shamsi\nEnter: ");
             scanf("%d", &which_doctor);
+            printf("Select time slot :\n");
+            printf("1.Mon-Tue: 9AM-5PM\n2.Wed-Fri: 10AM-2PM\n3.Sat:12PM-6PM\n");
+            printf("Enter :");
+            scanf("%d",&slot);
             if (which_doctor < 1 || which_doctor > 2) {
                 printf("Invalid choice\n");
                 return;
             }
-            {
-                int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&doctor_data,&pinfo, id);
-            }
+               { 
+			    int id = doctors_id(which_doctor, speciality);
+                appointmentdata(doctor_data,&pinfo,id,slot);
+               }
             break;
         case 3:
             printf("Best Urologists:\n");
             printf("1. Prof. Dr. Muhammad Farooq\n2. Dr. Muhammad Imran Malik\nEnter: ");
             scanf("%d", &which_doctor);
+            printf("Select time slot :\n");
+            printf("1.Mon-Tue: 9AM-5PM\n2.Wed-Fri: 10AM-2PM\n3.Sat:12PM-6PM\n");
+            printf("Enter :");
+            scanf("%d",&slot);
             if (which_doctor < 1 || which_doctor > 2) {
                 printf("Invalid choice\n");
                 return;
             }
-            {
-                int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&doctor_data,&pinfo, id);
-            }
+            
+               { 
+			    int id = doctors_id(which_doctor, speciality);
+                appointmentdata(doctor_data,&pinfo,id,slot);
+               }
             break;
         case 4:
             printf("Best Neurologists:\n");
             printf("1. Dr. Tabinda Batool\n2. Prof. Dr. Arif Herekar\nEnter: ");
             scanf("%d", &which_doctor);
+            printf("Select time slot :\n");
+            printf("1.Mon-Tue: 9AM-5PM\n2.Wed-Fri: 10AM-2PM\n3.Sat:12PM-6PM\n");
+            printf("Enter :");
+            scanf("%d",&slot);
             if (which_doctor < 1 || which_doctor > 2) {
                 printf("Invalid choice\n");
                 return;
             }
-            {
-                int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&doctor_data,&pinfo, id);
-            }
+            
+                { 
+			    int id = doctors_id(which_doctor, speciality);
+                appointmentdata(doctor_data,&pinfo,id,slot);
+               }
             break;
         case 5:
             printf("Best Dermatologists:\n");
             printf("1. Dr. Muhammad Amjad\n2. Dr. Aisha Ahmad\nEnter: ");
             scanf("%d", &which_doctor);
+            printf("Select time slot :\n");
+            printf("1.Mon-Tue: 9AM-5PM\n2.Wed-Fri: 10AM-2PM\n3.Sat:12PM-6PM\n");
+            printf("Enter :");
+            scanf("%d",&slot);
             if (which_doctor < 1 || which_doctor > 2) {
                 printf("Invalid choice\n");
                 return;
             }
-            {
-                int id = doctors_id(which_doctor, speciality);
-                appointmentdata(&doctor_data,&pinfo, id);
-            }
+            
+               { 
+			    int id = doctors_id(which_doctor, speciality);
+                appointmentdata(doctor_data,&pinfo,id,slot);
+               }
             break;
         case 6:
             return;
