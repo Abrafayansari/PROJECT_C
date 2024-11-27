@@ -10,11 +10,11 @@ void emergency();
 int doctors_id(int which_doctor, int speciality);
 struct Appointment {
     int doctor_id;
-    char patient_name[30];
-    char patient_phone[12];
-    char patient_email[30];
-    char patient_gender[8];
-    char patient_address[30];
+    char patient_name[100];
+    char patient_phone[100];
+    char patient_email[100];
+    char patient_gender[100];
+    char patient_address[100];
     char doctor_name[100];
     char slot[100];
 }appointment_data;
@@ -36,45 +36,62 @@ struct patient {
 } pinfo;
 void Doctor_fetch(struct Doctor *d,int max_doctors);
 void doctor(struct Doctor *d);  // Function declaration
-void Appointment_fetch(struct Appointment *A,int id);
+//void Appointment_fetch(struct Appointment *A,int id);
 
 
-void Appointment_fetch(struct Appointment *A,int id){
-	FILE *appointment_data_ptr=fopen("appointment.txt","r");
-	if (appointment_data_ptr == NULL) {
+void Appointment_fetch(struct Appointment *A, int id) {
+//	Doctor_fetch(doctor_data,10);
+//    printf("Attempting to fetch appointments for doctor with ID %d\n", id);
+    // Open the appointment file
+    FILE *appointment_data_ptr = fopen("appointment.txt", "r");
+    if (appointment_data_ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-	 int i = 0;
-	 fscanf(appointment_data_ptr, "%d", &A->doctor_id);
-	 getchar();
-	while(getchar()!=EOF){
-		 if(id==A->doctor_id){
-	 	fgets(A->patient_name, sizeof(A->patient_name), appointment_data_ptr);
-        A->patient_name[strcspn(A->patient_name, "\n")] = 0;  // Remove the trailing newline
 
-        fgets(A->patient_phone, sizeof(A->patient_phone), appointment_data_ptr);
-        A->patient_phone[strcspn(A->patient_phone, "\n")] = 0;  // Remove the trailing newline
+    int doctor_id;
+    while (fscanf(appointment_data_ptr, "%d", &doctor_id) == 1) {
+//    fscanf(appointment_data_ptr, "%d", &doctor_id);
 
-        fgets(A->patient_email, sizeof(A->patient_email), appointment_data_ptr);
-        A->patient_email[strcspn(A->patient_email, "\n")] = 0;  // Remove the trailing newline
-	  
-	  fgets(A->patient_gender, sizeof(A->patient_gender), appointment_data_ptr);
-        A->patient_gender[strcspn(A->patient_gender, "\n")] = 0;  
-        
-        fgets(A->patient_address, sizeof(A->patient_address), appointment_data_ptr);
-        A->patient_address[strcspn(A->patient_address, "\n")] = 0; 
-        
-        fgets(A->doctor_name, sizeof(A->doctor_name), appointment_data_ptr);
-        A->doctor_name[strcspn(A->doctor_name, "\n")] = 0; 
-        
-         fgets(A->slot, sizeof(A->slot), appointment_data_ptr);
-        A->slot[strcspn(A->slot, "\n")] = 0; 
-	 }
-	}
-	   
-	  
+        if (doctor_id == id) {
+//            printf("Found matching doctor ID. Reading appointment details...\n");
+
+            // Read the remaining appointment data
+  getchar();
+            fgets(A->patient_name, sizeof(A->patient_name), appointment_data_ptr);
+            A->patient_name[strcspn(A->patient_name, "\n")] = 0;  // Remove trailing newline
+
+            fgets(A->patient_phone, sizeof(A->patient_phone), appointment_data_ptr);
+            A->patient_phone[strcspn(A->patient_phone, "\n")] = 0;
+
+            fgets(A->patient_email, sizeof(A->patient_email), appointment_data_ptr);
+            A->patient_email[strcspn(A->patient_email, "\n")] = 0;
+
+            fgets(A->patient_gender, sizeof(A->patient_gender), appointment_data_ptr);
+            A->patient_gender[strcspn(A->patient_gender, "\n")] = 0;
+
+            fgets(A->patient_address, sizeof(A->patient_address), appointment_data_ptr);
+            A->patient_address[strcspn(A->patient_address, "\n")] = 0;
+
+            fgets(A->doctor_name, sizeof(A->doctor_name), appointment_data_ptr);
+            A->doctor_name[strcspn(A->doctor_name, "\n")] = 0;
+
+            fgets(A->slot, sizeof(A->slot), appointment_data_ptr);
+            A->slot[strcspn(A->slot, "\n")] = 0;
+
+            // Display the appointment details
+            
+
+            fclose(appointment_data_ptr);
+             // Exit the function after printing the appointment
+        }
+    }
+
+    // If no appointment is found for the given doctor ID
+    printf("No appointments found for doctor ID %d\n", id);
+    fclose(appointment_data_ptr);
 }
+
 void Doctor_fetch(struct Doctor *d, int max_doctors) {
     FILE *doctor_data_ptr = fopen("doctor2.txt", "r");  // Open the file in read mode
     
@@ -139,15 +156,15 @@ int main() {
     int stop=0;
     
     
-    Appointment_fetch(&appointment_data,2);  
-		  	printf("Appointments for Doctor %d\n", appointment_data.doctor_id);
-		  	printf("\nPatient Name: %s\n", appointment_data.patient_name);
-            printf("Patient Phone: %s\n", appointment_data.patient_phone);
-            printf("Patient Email: %s\n", appointment_data.patient_email);
-            printf("Patient Gender: %s\n", appointment_data.patient_gender);
-            printf("Patient Address: %s\n", appointment_data.patient_address);
-            printf("Slot: %s\n", appointment_data.slot);
-            printf("-----------------------------\n");
+//    Appointment_fetch(&appointment_data,2);  
+//		  	printf("Appointments for Doctor %d\n", appointment_data.doctor_id);
+//		  	printf("\nPatient Name: %s\n", appointment_data.patient_name);
+//            printf("Patient Phone: %s\n", appointment_data.patient_phone);
+//            printf("Patient Email: %s\n", appointment_data.patient_email);
+//            printf("Patient Gender: %s\n", appointment_data.patient_gender);
+//            printf("Patient Address: %s\n", appointment_data.patient_address);
+//            printf("Slot: %s\n", appointment_data.slot);
+//            printf("-----------------------------\n");
              printf("1.Patient\n2.Doctor\n3.Receptionist\n4.Exit\nEnter: ");
     scanf("%d", &role);
    while(stop==0){
@@ -376,6 +393,7 @@ void doctor(struct Doctor *d) {
     	 printf("1.Scheduled Appointments\n2.exit\n ");
     	 printf("Enter :");
     	 scanf("%d",&choice);
+    	 getchar();
     	 FILE *ptr;
     	  ptr = fopen("appointment.txt", "r");
     if (ptr == NULL) {
