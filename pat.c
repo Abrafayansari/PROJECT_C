@@ -1,4 +1,4 @@
-appointment#include <stdio.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -17,14 +17,15 @@ struct Appointment {
     char patient_address[30];
     char doctor_name[100];
     char slot[100];
-}appointment;
+}app;
 struct Doctor{
 int id;
 char name[100];
 char password[20];
 char speciality[100];
 char slots[3][100];	
-}doctor_data[10];
+};
+struct Doctor doctor_data[10];
 struct patient {
     char name[30];
     char phone[12];
@@ -32,30 +33,52 @@ struct patient {
     char gender[8];
     char address[30];
 } pinfo;
-void Doctor_fetch(struct Doctor *d);
+void Doctor_fetch(struct Doctor *d,int max_doctors);
 void doctor(struct Doctor *d);  // Function declaration
 
-void Doctor_fetch(struct Doctor *d){
-	 FILE *doctor_data_ptr=fopen("doctor.txt","r");
-	  if(doctor_data_ptr==NULL){
-    	printf("Error in opening file");
-	}
-	
-   
+void Doctor_fetch(struct Doctor *d, int max_doctors) {
+    FILE *doctor_data_ptr = fopen("doctor2.txt", "r");  // Open the file in read mode
+    
+    if (doctor_data_ptr == NULL) {
+        printf("Error opening file\n");
+        return;
     }
-fclose(doctor_data_ptr);
+
+    int i = 0;
+    // Read doctor data from the file
+    while (i < max_doctors && fscanf(doctor_data_ptr, "%d\n", &d[i].id) == 1) {
+        // Read password, name, speciality, and slots
+        fgets(d[i].password, sizeof(d[i].password), doctor_data_ptr);
+        d[i].password[strcspn(d[i].password, "\n")] = 0;  // Remove the trailing newline
+
+        fgets(d[i].name, sizeof(d[i].name), doctor_data_ptr);
+        d[i].name[strcspn(d[i].name, "\n")] = 0;  // Remove the trailing newline
+
+        fgets(d[i].speciality, sizeof(d[i].speciality), doctor_data_ptr);
+        d[i].speciality[strcspn(d[i].speciality, "\n")] = 0;  // Remove the trailing newline
+
+        // Read the 3 slots for the doctor
+        for (int j = 0; j < 3; j++) {
+            fgets(d[i].slots[j], sizeof(d[i].slots[j]), doctor_data_ptr);
+            d[i].slots[j][strcspn(d[i].slots[j], "\n")] = 0;  // Remove the trailing newline
+        }
+
+        i++;
+    }
+
+    fclose(doctor_data_ptr);  // Close the file after reading
 }
 
 void appointmentdata(struct Doctor *d,struct patient *p, int id,int slot) {
-    FILE *ptr;
-Doctor_fetch(doctor_data);
+
+Doctor_fetch(d,10);
 	// appointment
-    ptr = fopen("appointment.txt", "a"); // Open file in append mode to add new appointments
+        FILE *ptr = fopen("appointment.txt", "a"); // Open file in append mode to add new appointments
     if (ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
-    fprintf(ptr, "%d\n%s\n%s\n%s\n%s\n%s\n%s", 
+    fprintf(ptr, "%d\n%s\n%s\n%s\n%s\n%s\n%s\n", 
             id, p->name, p->phone, p->email, p->gender, p->address,d[id-1].name);
            switch(slot){
            	case 1:
@@ -69,11 +92,12 @@ Doctor_fetch(doctor_data);
             break;
 		   }
 			
-    fclose(ptr); // Close the file after writing
+  fclose(ptr); // Close the file after writing
 }
 
 int main() {
     int role;
+     
     printf("1.Patient\n2.Doctor\n3.Receptionist\n4.Exit\nEnter: ");
     scanf("%d", &role);
     switch (role) {
@@ -91,7 +115,10 @@ int main() {
         default:
             printf("Invalid choice\n");
     }
-//    printf("%s",doctor_data[0].name);
+    if(!doctor_data[0].name){
+    printf("kaam band hai ");	
+	}
+   
    return 0;
 }
 
@@ -275,7 +302,7 @@ void doctor(struct Doctor *d) {
     printf("Enter your password: ");
    scanf("%s",password);
 
-    Doctor_fetch(doctor_data);
+//    Doctor_fetch(doctor_data,int max_doctors);
 
     for (int i = 0; i < 10; i++) {
         if (strcmp(password, d[i].password) == 0) {
@@ -292,11 +319,22 @@ void doctor(struct Doctor *d) {
     	 printf("Enter :");
     	 scanf("%d",&choice);
     	 FILE *ptr;
-    	  ptr = fopen("appointment.txt", "r"); // Open file in append mode to add new appointments
+    	  ptr = fopen("appointment.txt", "r");
     if (ptr == NULL) {
         printf("Error opening file\n");
         return;
     }
+        
+    switch(choice){
+     case 1:
+    	     	
+    	break;
+    	case 2:
+    	break;
+    	default:
+		break;											    	
+	}
+    	    
 	}
    
 }
