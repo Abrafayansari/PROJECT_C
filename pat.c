@@ -17,7 +17,7 @@ struct Appointment {
     char patient_address[30];
     char doctor_name[100];
     char slot[100];
-}app;
+}appointment_data;
 struct Doctor{
 int id;
 char name[100];
@@ -26,6 +26,7 @@ char speciality[100];
 char slots[3][100];	
 };
 struct Doctor doctor_data[10];
+
 struct patient {
     char name[30];
     char phone[12];
@@ -35,7 +36,45 @@ struct patient {
 } pinfo;
 void Doctor_fetch(struct Doctor *d,int max_doctors);
 void doctor(struct Doctor *d);  // Function declaration
+void Appointment_fetch(struct Appointment *A,int id);
 
+
+void Appointment_fetch(struct Appointment *A,int id){
+	FILE *appointment_data_ptr=fopen("appointment.txt","r");
+	if (appointment_data_ptr == NULL) {
+        printf("Error opening file\n");
+        return;
+    }
+	 int i = 0;
+	 fscanf(appointment_data_ptr, "%d", &A->doctor_id);
+	 getchar();
+	while(getchar()!=EOF){
+		 if(id==A->doctor_id){
+	 	fgets(A->patient_name, sizeof(A->patient_name), appointment_data_ptr);
+        A->patient_name[strcspn(A->patient_name, "\n")] = 0;  // Remove the trailing newline
+
+        fgets(A->patient_phone, sizeof(A->patient_phone), appointment_data_ptr);
+        A->patient_phone[strcspn(A->patient_phone, "\n")] = 0;  // Remove the trailing newline
+
+        fgets(A->patient_email, sizeof(A->patient_email), appointment_data_ptr);
+        A->patient_email[strcspn(A->patient_email, "\n")] = 0;  // Remove the trailing newline
+	  
+	  fgets(A->patient_gender, sizeof(A->patient_gender), appointment_data_ptr);
+        A->patient_gender[strcspn(A->patient_gender, "\n")] = 0;  
+        
+        fgets(A->patient_address, sizeof(A->patient_address), appointment_data_ptr);
+        A->patient_address[strcspn(A->patient_address, "\n")] = 0; 
+        
+        fgets(A->doctor_name, sizeof(A->doctor_name), appointment_data_ptr);
+        A->doctor_name[strcspn(A->doctor_name, "\n")] = 0; 
+        
+         fgets(A->slot, sizeof(A->slot), appointment_data_ptr);
+        A->slot[strcspn(A->slot, "\n")] = 0; 
+	 }
+	}
+	   
+	  
+}
 void Doctor_fetch(struct Doctor *d, int max_doctors) {
     FILE *doctor_data_ptr = fopen("doctor2.txt", "r");  // Open the file in read mode
     
@@ -97,9 +136,23 @@ Doctor_fetch(d,10);
 
 int main() {
     int role;
-     
-    printf("1.Patient\n2.Doctor\n3.Receptionist\n4.Exit\nEnter: ");
+    int stop=0;
+    
+    
+    Appointment_fetch(&appointment_data,2);  
+		  	printf("Appointments for Doctor %d\n", appointment_data.doctor_id);
+		  	printf("\nPatient Name: %s\n", appointment_data.patient_name);
+            printf("Patient Phone: %s\n", appointment_data.patient_phone);
+            printf("Patient Email: %s\n", appointment_data.patient_email);
+            printf("Patient Gender: %s\n", appointment_data.patient_gender);
+            printf("Patient Address: %s\n", appointment_data.patient_address);
+            printf("Slot: %s\n", appointment_data.slot);
+            printf("-----------------------------\n");
+             printf("1.Patient\n2.Doctor\n3.Receptionist\n4.Exit\nEnter: ");
     scanf("%d", &role);
+   while(stop==0){
+   	
+   	 
     switch (role) {
         case 1:
             patient();
@@ -115,6 +168,7 @@ int main() {
         default:
             printf("Invalid choice\n");
     }
+   }
     if(!doctor_data[0].name){
     printf("kaam band hai ");	
 	}
@@ -126,6 +180,7 @@ void patient() {
     int choice;
     printf("\n1.Book Appointment\n2.Emergency\n3.Exit\nEnter: ");
     scanf("%d", &choice);
+    
     switch (choice) {
         case 1:
             appointment();
@@ -296,18 +351,21 @@ void doctor(struct Doctor *d) {
     char password[20];
     int found = 0;
 	int choice;
+	int doc_id;
+	
     
 
     printf("You are in the doctor section\n");
     printf("Enter your password: ");
    scanf("%s",password);
 
-//    Doctor_fetch(doctor_data,int max_doctors);
+ Doctor_fetch(doctor_data,10);
 
     for (int i = 0; i < 10; i++) {
         if (strcmp(password, d[i].password) == 0) {
             printf("Welcome doctor %s\n", d[i].name);
             found = 1;
+            doc_id=d[i].id;
             break;
         }
     }
@@ -327,13 +385,22 @@ void doctor(struct Doctor *d) {
         
     switch(choice){
      case 1:
-    	     	
+    	 Appointment_fetch(&appointment_data,doc_id);  
+		  	printf("Appointments for Doctor %s\n", appointment_data.doctor_name);
+		  	 printf("\nPatient Name: %s\n", appointment_data.patient_name);
+            printf("Patient Phone: %s\n", appointment_data.patient_phone);
+            printf("Patient Email: %s\n", appointment_data.patient_email);
+            printf("Patient Gender: %s\n", appointment_data.patient_gender);
+            printf("Patient Address: %s\n", appointment_data.patient_address);
+            printf("Slot: %s\n", appointment_data.slot);
+            printf("-----------------------------\n");
     	break;
     	case 2:
     	break;
     	default:
 		break;											    	
 	}
+	
     	    
 	}
    
