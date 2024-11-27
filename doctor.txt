@@ -1,48 +1,68 @@
+1
+abc
 Dr Muhammad Faisal Khanzada
 Cardiologist
 Mon-Tue: 9AM-5PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+2
+cdf
 Dr. Asad Pathan
 Cardiologist
 Mon-Tue: 10AM-6PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+3
+cdf
 Dr. Asma Jabeen
 Obstetrics & Gynecology
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+4
+cdf
 Dr. Azra Shamsi
 Obstetrics & Gynecology
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+5
+cdf
 Prof. Dr. Muhammad Farooq
 Urology
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+6
+cdf
 Dr. Muhammad Imran Malik
 General Medicine
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+7
+cdf
 Dr. Tabinda Batool
 Hypertension Specialist
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+8
+cd1
 Prof. Dr. Arif Herekar
 Neurology
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+9
+cdf
 Dr. Muhammad Amjad
 Dermatology
 Mon-Tue: 8AM-4PM
 Wed-Fri: 10AM-2PM
 Sat:12PM-6PM
+10
+cdf
 Dr. Aisha Ahmad
 Dermatology & Aesthetic Medicine
 Mon-Tue: 8AM-4PM
