@@ -39,9 +39,65 @@ void doctor(struct Doctor *d);  // Function declaration
 //void Appointment_fetch(struct Appointment *A,int id);
 
 
+//void Appointment_fetch(struct Appointment *A, int id) {
+////	Doctor_fetch(doctor_data,10);
+////    printf("Attempting to fetch appointments for doctor with ID %d\n", id);
+//    // Open the appointment file
+//    FILE *appointment_data_ptr = fopen("appointment.txt", "r");
+//    if (appointment_data_ptr == NULL) {
+//        printf("Error opening file\n");
+//        return;
+//    }
+//
+//    int doctor_id;
+////    printf("%d is doctor id\n",doctor_id);
+//    printf("%d is arg id\n",id);
+//    while (fscanf(appointment_data_ptr, "%d", &A->doctor_id ) == 1 ) {
+////    fscanf(appointment_data_ptr, "%d", &doctor_id);
+////  getchar();
+//while (fgetc(appointment_data_ptr) != '\n') {}
+//        	printf("%d is doctor id\n",A->doctor_id );
+//
+//        if (A->doctor_id == id) {
+//
+//           printf("Found matching doctor ID. Reading appointment details...\n");
+//            //appointment_data.doctor_id=doctor_id;
+//            // Read the remaining appointment data
+//
+//            fgets(A->patient_name, sizeof(A->patient_name), appointment_data_ptr);
+//            A->patient_name[strcspn(A->patient_name, "\n")] = 0;  // Remove trailing newline
+//
+//            fgets(A->patient_phone, sizeof(A->patient_phone), appointment_data_ptr);
+//            A->patient_phone[strcspn(A->patient_phone, "\n")] = 0;
+//
+//            fgets(A->patient_email, sizeof(A->patient_email), appointment_data_ptr);
+//            A->patient_email[strcspn(A->patient_email, "\n")] = 0;
+//
+//            fgets(A->patient_gender, sizeof(A->patient_gender), appointment_data_ptr);
+//            A->patient_gender[strcspn(A->patient_gender, "\n")] = 0;
+//
+//            fgets(A->patient_address, sizeof(A->patient_address), appointment_data_ptr);
+//            A->patient_address[strcspn(A->patient_address, "\n")] = 0;
+//
+//            fgets(A->doctor_name, sizeof(A->doctor_name), appointment_data_ptr);
+//            A->doctor_name[strcspn(A->doctor_name, "\n")] = 0;
+//
+//            fgets(A->slot, sizeof(A->slot), appointment_data_ptr);
+//            A->slot[strcspn(A->slot, "\n")] = 0;
+//
+//            // Display the appointment details
+//            
+//break;
+//          
+//             // Exit the function after printing the appointment
+//        }
+//    }
+//
+//    // If no appointment is found for the given doctor ID
+////    printf("No appointments found for doctor ID %d\n", id);
+//    fclose(appointment_data_ptr);
+//}
 void Appointment_fetch(struct Appointment *A, int id) {
-//	Doctor_fetch(doctor_data,10);
-//    printf("Attempting to fetch appointments for doctor with ID %d\n", id);
     // Open the appointment file
     FILE *appointment_data_ptr = fopen("appointment.txt", "r");
     if (appointment_data_ptr == NULL) {
@@ -49,15 +105,27 @@ void Appointment_fetch(struct Appointment *A, int id) {
         return;
     }
 
+    // Temporary variable to hold doctor_id from the file
     int doctor_id;
-    while (fscanf(appointment_data_ptr, "%d", &doctor_id) == 1) {
-//    fscanf(appointment_data_ptr, "%d", &doctor_id);
 
+    // Use a for loop to process each appointment
+    for (;;) {
+        // Read doctor ID from the file
+        if (fscanf(appointment_data_ptr, "%d", &doctor_id) != 1) {
+            break;  // End of file reached or failed to read doctor_id
+        }
+
+        // Skip the newline after reading doctor_id
+        while (fgetc(appointment_data_ptr) != '\n') {}
+
+        // Check if the doctor_id matches the passed id
         if (doctor_id == id) {
-//            printf("Found matching doctor ID. Reading appointment details...\n");
+            printf("Found matching doctor ID %d. Reading appointment details...\n", doctor_id);
 
-            // Read the remaining appointment data
-  getchar();
+            // Store the doctor_id in the structure
+            A->doctor_id = doctor_id;
+
+            // Read the remaining appointment data and store it in the structure
             fgets(A->patient_name, sizeof(A->patient_name), appointment_data_ptr);
             A->patient_name[strcspn(A->patient_name, "\n")] = 0;  // Remove trailing newline
 
@@ -79,19 +147,29 @@ void Appointment_fetch(struct Appointment *A, int id) {
             fgets(A->slot, sizeof(A->slot), appointment_data_ptr);
             A->slot[strcspn(A->slot, "\n")] = 0;
 
-            // Display the appointment details
-            
-
-            fclose(appointment_data_ptr);
-             // Exit the function after printing the appointment
+            // Exit the loop after reading the appointment for the matching doctor
+            break;
+        } else {
+            // Skip the rest of the fields for the current appointment if doctor_id doesn't match
+            char temp[200];
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip patient_name
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip patient_phone
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip patient_email
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip patient_gender
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip patient_address
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip doctor_name
+            fgets(temp, sizeof(temp), appointment_data_ptr); // Skip slot
         }
     }
 
-    // If no appointment is found for the given doctor ID
-    printf("No appointments found for doctor ID %d\n", id);
+    // If no appointment was found for the given doctor ID
+    if (ftell(appointment_data_ptr) == 0) {
+        printf("No appointments found for doctor ID %d\n", id);
+    }
+
+    // Close the file
     fclose(appointment_data_ptr);
 }
-
 void Doctor_fetch(struct Doctor *d, int max_doctors) {
     FILE *doctor_data_ptr = fopen("doctor2.txt", "r");  // Open the file in read mode
     
@@ -390,22 +468,16 @@ void doctor(struct Doctor *d) {
     if (!found) {
         printf("Invalid password. Please try again.\n");
     }else{
+    	printf("Id for doctor is %d",doc_id);
     	 printf("1.Scheduled Appointments\n2.exit\n ");
     	 printf("Enter :");
     	 scanf("%d",&choice);
     	 getchar();
-    	 FILE *ptr;
-    	  ptr = fopen("appointment.txt", "r");
-    if (ptr == NULL) {
-        printf("Error opening file\n");
-        return;
-    }
-        
     switch(choice){
      case 1:
     	 Appointment_fetch(&appointment_data,doc_id);  
 		  	printf("Appointments for Doctor %s\n", appointment_data.doctor_name);
-		  	 printf("\nPatient Name: %s\n", appointment_data.patient_name);
+		  	printf("\nPatient Name: %s\n", appointment_data.patient_name);
             printf("Patient Phone: %s\n", appointment_data.patient_phone);
             printf("Patient Email: %s\n", appointment_data.patient_email);
             printf("Patient Gender: %s\n", appointment_data.patient_gender);
