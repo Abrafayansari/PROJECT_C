@@ -501,3 +501,56 @@ void receptionist() {
         }
     }
 }
+void doctor(struct Doctor *d) {
+    char password[20];
+    int found = 0;
+	int choice;
+	int doc_id;
+	
+    
+
+    printf("You are in the doctor section\n");
+    printf("Enter your password: ");
+   scanf("%s",password);
+
+ Doctor_fetch(doctor_data,10);
+
+    for (int i = 0; i < 10; i++) {
+        if (strcmp(password, d[i].password) == 0) {
+            printf("Welcome doctor %s\n", d[i].name);
+            found = 1;
+            doc_id=d[i].id;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Invalid password. Please try again.\n");
+    }else{
+//    	printf("Id for doctor is %d",doc_id);
+    	 printf("1.Scheduled Appointments\n2.exit\n ");
+    	 printf("Enter :");
+    	 scanf("%d",&choice);
+    	 getchar();
+    switch(choice){
+     case 1:
+    	 Appointment_fetch(&appointment_data,doc_id);  
+		  	printf("Appointments for Doctor %s\n", appointment_data.doctor_name);
+		  	printf("\nPatient Name: %s\n", appointment_data.patient_name);
+            printf("Patient Phone: %s\n", appointment_data.patient_phone);
+            printf("Patient Email: %s\n", appointment_data.patient_email);
+            printf("Patient Gender: %s\n", appointment_data.patient_gender);
+            printf("Patient Address: %s\n", appointment_data.patient_address);
+            printf("Slot: %s\n", appointment_data.slot);
+            printf("-----------------------------\n");
+    	break;
+    	case 2:
+    	break;
+    	default:
+		break;											    	
+	}
+	
+    	    
+	}
+   
+}
